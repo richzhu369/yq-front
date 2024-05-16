@@ -22,16 +22,9 @@
           <span>{{ row.ip }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Status" class-name="status-col" width="100">
-        <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
-        </template>
-      </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button size="mini" type="danger" @click="handleDelIP(row.ip)">
             Delete
           </el-button>
         </template>
@@ -238,6 +231,14 @@ export default {
       const formData = new FormData()
       formData.append('ips', this.listQuery.ip)
       formData.append('act', 'add')
+      formData.append('opUser', 'admin')
+      opIP(formData)
+      this.getList()
+    },
+    handleDelIP(row) {
+      const formData = new FormData()
+      formData.append('ips', row)
+      formData.append('act', 'del')
       formData.append('opUser', 'admin')
       opIP(formData)
       this.getList()
