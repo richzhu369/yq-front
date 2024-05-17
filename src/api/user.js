@@ -23,26 +23,34 @@ export function logout() {
   })
 }
 
-export function create_user(data) {
+export function createUser(data) {
   return request({
-    url: 'http://127.0.0.1:8080/api/user/new',
+    url: '/api/user/new',
     method: 'post',
     data
   })
 }
 
-export function delete_user(data) {
+export function resetUser(data) {
   return request({
-    url: 'http://127.0.0.1:8080/api/user/delete',
+    url: '/api/user/reset',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUser(data) {
+  return request({
+    url: '/api/user/delete',
     method: 'delete',
     data
   })
 }
 
-export function update_user(data) {
+export function fetchUserList(token) {
   return request({
-    url: 'http://127.0.0.1:8080/api/user/update',
-    method: 'put',
-    data
+    url: '/api/user/list',
+    method: 'get',
+    params: { token }
   })
 }

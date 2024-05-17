@@ -9,7 +9,7 @@ const userList = {
   name: 'Table',
   meta: {
     title: 'Table',
-    icon: 'table'
+    icon: 'user'
   },
   children: [
     {

@@ -15,8 +15,16 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+  // 创建一个正则表达式，它匹配从开头到结尾的一个或多个小写字母或数字
+  const regex = /^[a-z0-9]+$/
+
+  // 首先，确保 str 不为空
+  if (!str || str.trim() === '') {
+    return false;
+  }
+
+  // 使用正则表达式测试 str
+  return regex.test(str.trim());
 }
 
 /**
