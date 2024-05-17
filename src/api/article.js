@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: 'http://127.0.0.1:8080/api/ingress/whitelistLog',
+    url: '/api/ingress/whitelistLog',
     method: 'get',
     params: query
   })
