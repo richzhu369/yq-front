@@ -1,12 +1,5 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.ip" placeholder="ip" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAddIP">
-        加白IP
-      </el-button>
-    </div>
-
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -22,24 +15,30 @@
           <span>{{ row.ip }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button size="mini" type="danger" @click="handleDelIP(row.ip)">
-            Delete
-          </el-button>
+      <el-table-column label="操作人" min-width="150px">
+        <template slot-scope="{row}">
+          <span>{{ row.opUser }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作时间" min-width="150px">
+        <template slot-scope="{row}">
+          <span>{{ row.CreatedAt }}</span>
         </template>
       </el-table-column>
     </el-table>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/ingressWhitelist'
+import { fetchLogList } from '@/api/ingressWhitelist'
 import waves from '@/directive/waves' // waves directive
 import { opIP } from '@/api/ingressWhitelist'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
   name: 'ComplexTable',
+  components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -97,7 +96,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      fetchLogList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
 

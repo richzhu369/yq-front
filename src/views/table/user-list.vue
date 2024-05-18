@@ -255,7 +255,11 @@ export default {
             // 当 Promise 解决时，调用 getList
             this.getList()
             // 并设置 listLoading 为 false
-            this.listLoading = false
+            this.dialogResetVisible = false
+            this.$message({
+              message: '修改密码成功',
+              type: 'success'
+            })
           }).catch((error) => {
             // 如果有错误，同样需要设置 listLoading 为 false
             this.listLoading = false
