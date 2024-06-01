@@ -9,6 +9,7 @@ import Layout from '@/layout'
 /* Router Modules */
 import cwWhitelist from './modules/whiteList'
 import userList from './modules/userList'
+import publicProperty from '@/router/modules/publicProperty'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -105,6 +106,7 @@ export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
   cwWhitelist,
   userList,
+  publicProperty,
 
   {
     path: '/clipboard',
