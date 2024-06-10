@@ -16,7 +16,7 @@ const cwWhitelist = {
       path: 'cw-whitelist',
       component: () => import('@/views/table/white-list'),
       name: 'cw-whitelist',
-      meta: { title: '财务白名单' }
+      meta: { title: '财务回调白名单' }
     },
     {
       path: 'cw-whitelist-log',

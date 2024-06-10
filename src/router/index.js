@@ -10,6 +10,7 @@ import Layout from '@/layout'
 import cwWhitelist from './modules/whiteList'
 import userList from './modules/userList'
 import publicProperty from '@/router/modules/publicProperty'
+import merchantManagement from '@/router/modules/merchantManagement'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -107,19 +108,7 @@ export const asyncRoutes = [
   cwWhitelist,
   userList,
   publicProperty,
-
-  {
-    path: '/clipboard',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/clipboard/index'),
-        name: 'ClipboardDemo',
-        meta: { title: 'Clipboard', icon: 'clipboard' }
-      }
-    ]
-  },
+  merchantManagement,
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

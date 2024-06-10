@@ -1,15 +1,5 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.ip" placeholder="IP地址" style="width: 200px;" class="filter-item" />
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAddIP">
-        加白IP
-      </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDeleteIP">
-        删除IP
-      </el-button>
-    </div>
-
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -20,24 +10,9 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('ID')">
-        <template slot-scope="{row}">
-          <span>{{ row.ID }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="日期" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.CreatedAt }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="IP" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.ip }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="行为" min-width="150px">
-        <template slot-scope="{row}">
-          <span>{{ row.act }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作人" min-width="150px">
@@ -45,29 +20,36 @@
           <span>{{ row.opUser }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
+      <el-table-column label="操作时间" min-width="150px">
         <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
+          <span>{{ row.CreatedAt }}</span>
         </template>
       </el-table-column>
-
     </el-table>
-
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
-import { opIP, getLog } from '@/api/fetchIPAdd'
+import { fetchLogList } from '@/api/ingressWhitelist'
 import waves from '@/directive/waves' // waves directive
+import { opIP } from '@/api/ingressWhitelist'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
-
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        done: 'success',
+        repeat: 'danger',
+        deleted: 'danger'
+      }
+      return statusMap[status]
+    }
+  },
   data() {
     return {
       tableKey: 0,
@@ -82,9 +64,7 @@ export default {
         type: undefined,
         sort: '+id'
       },
-      importanceOptions: [1, 2, 3],
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['published', 'draft', 'deleted'],
+      statusOptions: ['done', 'repeat', 'deleted'],
       showReviewer: false,
       temp: {
         id: undefined,
@@ -93,7 +73,7 @@ export default {
         timestamp: new Date(),
         ip: '',
         type: '',
-        status: 'published'
+        status: 'done'
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -106,9 +86,8 @@ export default {
       rules: {
         type: [{ required: true, message: 'type is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        ip: [{ required: true, message: 'title is required', trigger: 'blur' }]
-      },
-      downloadLoading: false
+        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+      }
     }
   },
   created() {
@@ -117,7 +96,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getLog(this.listQuery).then(response => {
+      fetchLogList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
 
@@ -146,22 +125,38 @@ export default {
       this.handleFilter()
     },
     handleAddIP() {
+      this.listLoading = true
       const formData = new FormData()
       formData.append('ips', this.listQuery.ip)
       formData.append('act', 'add')
       formData.append('opUser', 'admin')
-      opIP(formData)
-      this.getList()
+      opIP(formData).then(() => {
+        // 当 Promise 解决时，调用 getList
+        this.getList()
+        // 并设置 listLoading 为 false
+        this.listLoading = false
+      }).catch((error) => {
+        // 如果有错误，同样需要设置 listLoading 为 false
+        this.listLoading = false
+        console.error('Error adding IP:', error);
+      })
     },
-    handleDeleteIP() {
+    handleDelIP(row) {
+      this.listLoading = true
       const formData = new FormData()
-      formData.append('ips', this.listQuery.ip)
+      formData.append('ips', row)
       formData.append('act', 'del')
-      opIP(formData)
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
+      formData.append('opUser', 'admin')
+      opIP(formData).then(() => {
+        // 当 Promise 解决时，调用 getList
+        this.getList()
+        // 并设置 listLoading 为 false
+        this.listLoading = false
+      }).catch((error) => {
+        // 如果有错误，同样需要设置 listLoading 为 false
+        this.listLoading = false
+        console.error('Error adding IP:', error);
+      })
     }
   }
 }
