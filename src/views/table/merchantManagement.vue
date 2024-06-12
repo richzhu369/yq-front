@@ -21,30 +21,40 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="站点名称" min-width="50px">
+      <el-table-column label="站点名称" min-width="30px">
         <template slot-scope="{row}">
-          <el-button v-if="row.Process === 'process'" type="text" icon="el-icon-loading" @click="getCreateStatus(row.MerchantName)">
+          <el-button v-if="row.Status === 'process'" type="text" icon="el-icon-loading" @click="getCreateStatus(row.MerchantName)">
             {{ row.MerchantName }}
           </el-button>
-          <el-button v-if="row.Process === 'failed'" type="text" icon="el-icon-circle-close" @click="getCreateStatus(row.MerchantName)">
+          <el-button v-if="row.Status === 'failed'" type="text" icon="el-icon-circle-close" @click="getCreateStatus(row.MerchantName)">
             {{ row.MerchantName }}
           </el-button>
-          <el-button v-if="row.Process === 'done'" type="text" icon="el-icon-circle-check" @click="getCreateStatus(row.MerchantName)">
+          <el-button v-if="row.Status === 'done'" type="text" icon="el-icon-circle-check" @click="getCreateStatus(row.MerchantName)">
             {{ row.MerchantName }}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="前端域名" min-width="100px">
+      <el-table-column label="商户号" min-width="30px">
+        <template slot-scope="{row}">
+          <span>{{ row.MerchantCode }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="前端域名" min-width="80px">
         <template slot-scope="{row}">
           <span>{{ row.ip }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="awscf后台域名" min-width="100px">
+      <el-table-column label="财务域名" min-width="80px">
+        <template slot-scope="{row}">
+          <span>{{ row.CwDomain }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="awscf后台域名" min-width="80px">
         <template slot-scope="{row}">
           <span>{{ row.AwsCdnDomain }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="cf后台域名" min-width="100px">
+      <el-table-column label="cf后台域名" min-width="80px">
         <template slot-scope="{row}">
           <span>{{ row.CfDomain }}</span>
         </template>
@@ -112,7 +122,6 @@
 <script>
 import { createMerchant, createProgress, fetchList } from '@/api/merchantManagement'
 import waves from '@/directive/waves' // waves directive
-// todo: 创建抽屉，利用timeline 展示所有的建站步骤
 export default {
   name: 'ComplexTable',
   directives: { waves },
