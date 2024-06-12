@@ -26,10 +26,10 @@
           <el-button v-if="row.Status === 'process'" type="text" icon="el-icon-loading" @click="getCreateStatus(row.MerchantName)">
             {{ row.MerchantName }}
           </el-button>
-          <el-button v-if="row.Status === 'failed'" type="text" icon="el-icon-circle-close" @click="getCreateStatus(row.MerchantName)">
+          <el-button v-if="row.Status === 'failed'" type="text" icon="el-icon-close" @click="getCreateStatus(row.MerchantName)">
             {{ row.MerchantName }}
           </el-button>
-          <el-button v-if="row.Status === 'done'" type="text" icon="el-icon-circle-check" @click="getCreateStatus(row.MerchantName)">
+          <el-button v-if="row.Status === 'done'" type="text" icon="el-icon-check" @click="getCreateStatus(row.MerchantName)">
             {{ row.MerchantName }}
           </el-button>
         </template>
@@ -80,7 +80,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="创建商户" :visible.sync="createMerchantVisible" @close="form.merchantName = ''">
+    <el-dialog title="创建商户" :visible.sync="createMerchantVisible" @close="cleanCreateForm">
       <el-form :model="form">
         <el-form-item label="商户名称" label-width="120px">
           <el-input v-model="form.merchantName" placeholder="例如: b99" autocomplete="off" />
@@ -116,7 +116,6 @@
       </el-timeline>
     </el-drawer>
   </div>
-
 </template>
 
 <script>
@@ -185,6 +184,10 @@ export default {
         this.total = response.data.total
         this.listLoading = false
       })
+    },
+    cleanCreateForm(){
+      this.form.merchantName = ''
+      this.form.merchantCode = ''
     },
     handleCreateMerchant() {
       const formData = new FormData()
