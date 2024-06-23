@@ -23,3 +23,11 @@ export function fetchLogList(query){
     params: query
   })
 }
+
+export function getStatus(query) {
+  return request({
+    url: '/api/ingress/getStatus',
+    method: 'get',
+    params: query
+  })
+}

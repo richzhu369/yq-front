@@ -2,14 +2,14 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.ip" placeholder="ip" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAddIP">
-        加白IP
+      <el-button :loading="listLoading" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAddIP">
+        <template v-if="listLoading">当前已存在一个加白进程，请稍等</template>
+        <template v-else>加白IP</template>
       </el-button>
     </div>
 
     <el-table
       :key="tableKey"
-      v-loading="listLoading"
       :data="list"
       border
       fit
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/ingressWhitelist'
+import { fetchList, getStatus } from '@/api/ingressWhitelist'
 import waves from '@/directive/waves' // waves directive
 import { opIP } from '@/api/ingressWhitelist'
 
@@ -96,15 +96,17 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = true
+      this.checkIsProcessing()
+
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+      })
+    },
+    checkIsProcessing() {
+      getStatus().then(response => {
+        this.isExistProcess = response.data.res
+        this.listLoading = this.isExistProcess === true
       })
     },
     handleFilter() {
@@ -156,7 +158,7 @@ export default {
       }).catch((error) => {
         // 如果有错误，同样需要设置 listLoading 为 false
         this.listLoading = false
-        console.error('Error adding IP:', error);
+        console.error('Error adding IP:', error)
       })
     }
   }
