@@ -185,7 +185,7 @@ export default {
         this.listLoading = false
       })
     },
-    cleanCreateForm(){
+    cleanCreateForm() {
       this.form.merchantName = ''
       this.form.merchantCode = ''
     },
@@ -195,8 +195,6 @@ export default {
       formData.append('merchantCode', this.form.merchantCode)
 
       createMerchant(formData).then((res) => {
-        // 当 Promise 解决时，调用 getList
-        this.getList()
         // 并设置 listLoading 为 false
         this.listLoading = false
         this.createMerchantVisible = false
@@ -204,6 +202,8 @@ export default {
           // 如果是 success，则执行 startCheckStatus
           this.$message.success('开始创建商户')
         }
+        // 当 Promise 解决时，调用 getList
+        this.getList()
       }).catch((error) => {
         // 如果有错误，同样需要设置 listLoading 为 false
         this.listLoading = false
@@ -247,6 +247,8 @@ export default {
     stopCheckStatus() {
       clearInterval(this.intervalId)
       this.intervalId = null
+      this.form.merchantCode = ''
+      this.form.merchantName = ''
     },
     deleteMerchant() {
       this.$message.info('这个功能开发中。')
