@@ -115,14 +115,17 @@
         </el-timeline-item>
       </el-timeline>
     </el-drawer>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
 <script>
 import { createMerchant, createProgress, fetchList } from '@/api/merchantManagement'
 import waves from '@/directive/waves' // waves directive
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'ComplexTable',
+  components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
