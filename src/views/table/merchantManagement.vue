@@ -138,7 +138,7 @@
           <el-input v-model="newFrontDomain.domain" placeholder="请输入新域名:" autocomplete="off" name="newFrontDomain" />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="runBind(newFrontDomain.domain)">提交</el-button>
+          <el-button type="success" native-type="submit" @click="runBind(newFrontDomain.domain)">提交</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
